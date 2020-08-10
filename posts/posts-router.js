@@ -25,15 +25,19 @@ router.get("/api/posts", (req, res) => {
 });
 
 // create a post
+/* router.post("/api/posts", (req, res) => {
+
+}); */
 
 // get post by id
 router.get("/api/posts/:id", (req, res) => {
     db.findById(req.params.id)
         .then((post) => {
-            if (!post) {
-                return res.status(404).json({ message: "The post with the specified ID does not exist." });
+            if (post.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." });
             } else {
-                res.json(post)
+                console.log("post", post);
+                res.json(post);
             }
         })
         .catch((error) => {
@@ -47,8 +51,24 @@ router.get("/api/posts/:id", (req, res) => {
 // update a post
 
 // get comments on a post
+router.get("/api/posts/:postId/comments", (req, res) => {
+    db.findPostComments(req.params.postId)
+        .then((comments) => {
+            if (comments.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else {
+                res.json(comments);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "The comments information could not be retrieved." })
+        });
+});
 
 // create a comment on a post
+
+// get comment on a post by id
 
 // 4 - export the whole router
 module.exports = router;
