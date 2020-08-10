@@ -19,15 +19,31 @@ router.get("/api/posts", (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            // adding the return to cancel the request
-            return res.status(500).json({ error: "The posts information could not be retrieved." })
+            res.status(500).json({ error: "The posts information could not be retrieved." })
         });
 });
 
 // create a post
-/* router.post("/api/posts", (req, res) => {
-
-}); */
+router.post("/api/posts", (req, res) => {
+    if (!req.body.title || !req.body.contents) {
+        // adding the return to cancel the request
+        return res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+    }
+    db.insert({ title: req.body.title, contents: req.body.contents })
+        .then((postId) => {
+            db.findById(postId.id)
+                .then((post) => {
+                    res.status(201).json(post);
+                })
+                .catch((error) => {
+                res.status(500).json({ error: "There was an error while saving the post to the database." })
+            })  
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "There was an error while saving the post to the database." });
+        });
+});
 
 // get post by id
 router.get("/api/posts/:id", (req, res) => {
@@ -42,7 +58,7 @@ router.get("/api/posts/:id", (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            return res.status(500).json({ error: "The post information could not be retrieved." });
+            res.status(500).json({ error: "The post information could not be retrieved." });
         });
 });
 
