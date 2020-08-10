@@ -98,8 +98,54 @@ router.get("/api/posts/:postId/comments", (req, res) => {
 });
 
 // create a comment on a post
-
-// get comment on a post by id
+router.post("/api/posts/:postId/comments", (req, res) => {
+    // check if the request contains input
+    if (!req.body.text) {
+        // adding the return to cancel the request
+        return res.status(400).json({ errorMessage: "Please provide text for the comment." });
+    }
+    // start the request
+    db.insertComment({ text: req.body.text, post_id: req.params.postId })
+        // the comment was added to the database
+        .then((idObj) => {
+            // find the new comment
+            // Don't forget the id is an object
+            db.findCommentById(idObj.id)
+                .then((comment) => {
+                    console.log(comment);
+                    if (comment.length === 0) {
+                        res.json({ message: "This comment is apparently an empty array"})
+                    } else {
+                        // return the new comment
+                        res.status(201).json(comment);
+                    }
+                })
+                .catch((error) => {
+                    // couldn't find the comment, let the client know
+                    console.log(error);
+                    res.status(500).json({ error: "There was an error while trying to retrieve the newly created comment." });
+                });
+        })
+        // the comment was not added
+        .catch((error) => {
+            console.log(error);
+            db.findById(req.params.postId)
+                .then((post) => {
+                    if (post.length === 0) {
+                        // the post ID does not exist
+                        res.status(404).json({ message: "The post with the specified ID does not exist." });
+                    } else {
+                        // the comment could not be saved
+                        res.status(500).json({ error: "There was an error while saving the comment to the database." });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    // there was an error while trying to find the post with that id
+                    res.status(500).json({ error: "There was an error while saving the comment to the database." });
+                });
+        });
+});
 
 // 4 - export the whole router
 module.exports = router;
