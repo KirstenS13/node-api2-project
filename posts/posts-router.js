@@ -19,13 +19,28 @@ router.get("/api/posts", (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            res.status(500).json({ error: "The posts information could not be retrieved." })
+            // adding the return to cancel the request
+            return res.status(500).json({ error: "The posts information could not be retrieved." })
         });
 });
 
 // create a post
 
 // get post by id
+router.get("/api/posts/:id", (req, res) => {
+    db.findById(req.params.id)
+        .then((post) => {
+            if (!post) {
+                return res.status(404).json({ message: "The post with the specified ID does not exist." });
+            } else {
+                res.json(post)
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.status(500).json({ error: "The post information could not be retrieved." });
+        });
+});
 
 // delete a post
 
