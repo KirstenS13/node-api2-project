@@ -63,6 +63,21 @@ router.get("/api/posts/:id", (req, res) => {
 });
 
 // delete a post
+router.delete("/api/posts/:id", (req, res) => {
+    db.remove(req.params.id)
+        .then((response) => {
+            console.log(response);
+            if (response === 1) {  
+                res.status(204).end();
+            } else {
+                res.status(404).json({ message: "The post with the specified ID does not exist." });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "The post could not be removed." });
+        });
+});
 
 // update a post
 
