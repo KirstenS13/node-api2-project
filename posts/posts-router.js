@@ -11,5 +11,29 @@ const router = express.Router();
 
 // 3 - define endpoints
 
+// get posts
+router.get("/api/posts", (req, res) => {
+    db.find()
+        .then((posts) => {
+            res.json(posts)
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({ error: "The posts information could not be retrieved." })
+        });
+});
+
+// create a post
+
+// get post by id
+
+// delete a post
+
+// update a post
+
+// get comments on a post
+
+// create a comment on a post
+
 // 4 - export the whole router
 module.exports = router;
