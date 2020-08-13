@@ -6,6 +6,8 @@ const express = require('express');
 // 1.5 - bring in routers
 const postsRouter = require('./posts/posts-router');
 
+const port = process.env.PORT || 8000;
+
 // 2 - create server
 const server = express();
 
@@ -20,6 +22,6 @@ server.get("/", (req, res) => {
 });
 
 // 4 - have the server start listening
-server.listen(8000, () => {
+server.listen(port, () => {
     console.log("Server listening on port 8000");
 });
