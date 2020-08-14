@@ -18,7 +18,11 @@ server.use(postsRouter);
 
 // Optional - define endpoints that don't live in routers
 server.get("/", (req, res) => {
-    res.json({ message: "Hi, it's me the server. I'm working." });
+    console.log(process.env.ADVICE);
+    res.json({ 
+        message: "Hi, it's me the server. I'm working.",
+        advice: process.env.ADVICE || "Honeybees can count"
+    });
 });
 
 // 4 - have the server start listening
